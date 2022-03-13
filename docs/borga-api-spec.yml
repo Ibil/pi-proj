@@ -1,0 +1,395 @@
+openapi: 3.0.0
+
+info:
+  description: Board Games Application.
+  version: "1.0.0"
+  title: Borga
+paths:
+  /games/popular/{limit}:
+    parameters:
+      - $ref: "#/components/parameters/limitParam"
+    get:
+      summary: Get the list of most popular games from boardgame atlas
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+        '404':
+          description: Games not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  /search/games/{name}:
+    parameters:
+      - $ref: "#/components/parameters/searchGameParam"
+    get:
+      summary: Search boargame atlas for game by name
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/GameDetails'
+        '404':
+          description: Games not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  /games/gameDetails/{name}:
+    parameters:
+      - $ref: "#/components/parameters/searchGameParam"
+    get:
+      summary: Get game details by name
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Game'
+        '404':
+          description: Games not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  /user:
+    post:
+      summary: create a new user and returns the newly associated bearer token
+      responses:
+        "200":
+          description: Response body should contain the bearer token for the created user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/bearerToken"
+        "500":
+          description: Error creating the user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  /group/{groupId}:
+    parameters:
+      - $ref: "#/components/parameters/groupIdParam"
+    get:
+      security:
+        - bearerToken: []
+      summary: Get a group from a user
+      responses:
+        "200":
+          description: Response body should be list of groups
+          content:
+            application/json:
+              schema:
+                 $ref: "#/components/schemas/groupDetails"
+        "404":
+          description: There is no group for the given user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+    delete:
+      security:
+        - bearerToken: []
+      summary: Delete a group      
+      responses:
+        "200":
+          description: ola
+        "404":
+          description: There is no user for the given bearer token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"       
+  /group:
+    post:
+      security:
+        - bearerToken: []
+      summary: Create group providing its name and description for the user with the given bearerToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/groupCreate"
+      responses:
+        "200":
+          description: returns the group identifier
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/groupIdSchema"
+        "404":
+          description: There is no user for the given bearer token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+    put:
+      security:
+        - bearerToken: []
+      summary: Edit group by changing its name and description
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/group"
+      responses:
+        "200":
+          description: returns the group identifier
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/groupIdSchema"
+        "404":
+          description: There is no user for the given bearer token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+  /groups:
+    get:
+      security:
+        - bearerToken: []
+      summary: List all groups from a user
+      responses:
+        "200":
+          description: Response body should be list of groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/group"
+        "404":
+          description: Response body should be an error object
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/error"
+                
+  /group/game:
+    post:
+      security:
+        - bearerToken: []
+      summary: Add a game to a group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addGame"
+      responses:
+        "200":
+          description: ola
+        "404":
+          description: There is no user for the given bearer token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"       
+    delete: 
+      security:
+        - bearerToken: []
+      summary: Remove a game from a group   
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/removeGame" 
+      responses:
+        "200":
+          description: ola
+        "404":
+          description: There is no user for the given bearer token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+
+  /test/initialize:
+    put:
+      summary: Creates a test user if it does not already exist      
+      responses:
+        "200":
+          description: created with success
+        "404":
+          description: did not create
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"       
+components:
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    groupIdParam:
+      name: groupId
+      in: path
+      required: true
+      schema:
+        type: string
+    searchGameParam:
+      name: name
+      in: path
+      required: true
+      schema:
+        type: string
+    limitParam:
+      name: limit
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int32
+  schemas:
+    bearerToken:
+      type: object
+      required:
+        - bearerToken
+      properties:
+        bearerToken:
+          type: string
+    Game:
+      type: object
+      required:
+        - id
+        - name
+        - url
+        - rank
+      properties:
+        id:
+          type: string
+          example: YDr6ZHfkja
+        name:
+          type: string
+          example: Azul
+        url:
+          type: string
+          example: 'https://www.boardgameatlas.com/game/YDr6ZHfkja/'
+        rank:
+          type: integer
+          format: int32
+          example: 308
+    GameDetails:
+      type: object
+      required:
+        - id
+        - name
+        - decription
+        - url
+        - image_url
+        - mechanicsNames
+        - categoryNames
+      properties:
+        id:
+          type: string
+          example: YDr6ZHfkja
+        name:
+          type: string
+          example: Azul
+        description:
+          type: string
+        url:
+          type: string
+          example: 'https://www.boardgameatlas.com/game/YDr6ZHfkja/'
+        image_url:
+          type: string
+        mechanicsNames:
+          type: array
+          items:
+            type: string
+        categoryNames:
+          type: array
+          items:
+            type: string
+    groupCreate:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    group:
+      required:
+        - id
+        - name
+        - description
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+    groupIdSchema:
+      required:
+        - groupId
+      properties:
+        groupId:
+          type: string
+    groupDetails:
+      required:
+        - name
+        - description
+        - games
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        games:
+          type: array
+          items:
+            type: object
+            required:
+              - gameId
+              - gameName
+            properties:
+              gameId:
+                type: string
+              gameName:
+                type: string
+    addGame:
+      required:
+        - groupId
+        - gameId
+        - gameName
+      properties:
+        groupId:
+          type: string
+        gameId:
+          type: string
+        gameName:
+          type: string
+    removeGame:
+      type: object
+      required:
+        - groupId
+        - gameId
+      properties:
+        groupId:
+          type: string
+        gameId:
+          type: string
+    error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string

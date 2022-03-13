@@ -1,0 +1,66 @@
+<script type="text/javascript" src="/borga-edit-group.js"></script> 
+<script type="text/javascript" src="/borga-delete-game.js"></script>  {{!-- bug both define window.onload --}}
+<br/>
+<h2>Group Details:</h2>
+<br/>
+
+<label >Group Name:</label>
+<input id="groupNameInput" type="text" class="form-control"  placeholder="Group Name cannot be empty" value={{name}} name="name">
+
+<label >Group Description:</label>
+<input id="groupDescInput" type="text" class="form-control" value={{description}} placeholder="Description" name="description">
+
+<button data-group-id="{{id}}" data-token="{{bearerToken}}" class="editGroup form-control btn-primary">Edit</button>
+
+<br/><hr><br/>
+
+<h3>Games: </h3>
+
+<form action="/app/group/game" method="post">
+    <input type="hidden" value={{id}} name="groupId">
+    <div class="row">
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Game id" name="gameId">
+        </div>
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Game name" name="gameName">
+        </div>
+        <div class="col">
+            <input type="submit" class="form-control btn-primary" value="Add Game to Group">
+        </div>
+    </div>
+</form>
+
+
+<table class="table table-striped" style="width: 100%">
+
+    <colgroup>
+        <col span="1" style="width: 10%;">
+        <col span="1" style="width: 45%;">
+        <col span="1" style="width: 45%;">
+    </colgroup>
+    <thead>
+        <tr>
+            <th>Actions</th>
+            <th>id</th>
+            <th>name</th>
+    </thead>
+    <tbody>
+        {{#each games}}
+        <tr>
+            <td>
+                <button 
+                    data-group-id="{{../id}}" 
+                    data-game-id="{{gameId}}" 
+                    data-token="{{../bearerToken}}" 
+                    class="btn btn-danger deleteGame"
+                >
+                    Delete
+                </button>
+            </td>
+            <td>{{gameId}}</td>
+            <td>{{gameName}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

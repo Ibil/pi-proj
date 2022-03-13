@@ -1,0 +1,41 @@
+<script type="text/javascript" src="/borga-delete-group.js"></script>
+
+<form method="post">
+    <div class="row">
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Title" name="name">
+        </div>
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Description" name="description">
+        </div>
+        <div class="col">
+            <input type="submit" class="form-control btn-primary" value="Create Group">
+        </div>
+    </div>
+</form>
+<hr>
+<table class="table table-striped" style="width: 100%">
+
+    <colgroup>
+        <col span="1" style="width: 10%;">
+        <col span="1" style="width: 45%;">
+        <col span="1" style="width: 45%;">
+    </colgroup>
+    <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Description</th>
+    </thead>
+    <tbody>
+        {{#each groups}}
+        <tr>
+            <td><button data-group-id="{{id}}" data-token="{{tokenmodel}}" class="btn btn-danger deleteGroup">Delete</button></td>
+            <td>
+                <a href="group/{{id}}">{{name}}</a>
+            </td>
+            <td>{{description}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

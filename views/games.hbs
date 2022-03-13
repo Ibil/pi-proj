@@ -1,0 +1,19 @@
+<table class="table table-bordered">
+    
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>URL</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each games}}
+            <tr>
+                <td><a href="/app/gameDetails/{{name}}">{{name}}</a></td>
+                <td>{{description}}</td>
+                <td><a href={{url}}>{{url}}</a></td> 
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

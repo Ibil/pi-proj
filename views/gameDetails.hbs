@@ -1,0 +1,18 @@
+<h2>Game: {{name}}</h2>
+<p>id: {{id}}</p>
+<p>name: {{name}}</p>
+<p>description: {{description}}</p>
+<p>url: <a href={{url}}>{{url}}</a></p>
+<p>image url: <a href={{image_url}}>{{image_url}}</a></p>
+<p>mechanics names:</p>
+<ul>
+    {{#each mechanicsNames}} 
+    <li>{{.}}</li>    
+    {{/each}}
+</ul>
+<p>category names:</p>
+<ul>
+    {{#each categoryNames}} 
+    <li>{{.}}</li>    
+    {{/each}}
+</ul>
